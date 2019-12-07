@@ -1,0 +1,108 @@
+CREATE TABLE Bookings_reserve_isFor (
+  bno CHAR(20),
+  seats INTEGER,
+  cost REAL,
+  email CHAR(20) NOT NULL,
+  rno (CHAR20) NOT NULL,
+  dropoff_lcode (CHAR20),
+  pickup_lcode (CHAR20),
+
+  PRIMARY KEY (bno),
+  FOREIGN KEY (email) REFERENCES Members,
+  FOREIGN KEY (rno) REFERENCES rides_src_dst_offer
+  FOREIGN KEY (dropoff_lcode) REFERENCES Locations,
+  FOREIGN KEY (pickup_lcode) REFERENCES Locations
+)
+
+CREATE TABLE rides_src_dst_offer (
+  rno CHAR(20),
+  price REAL,
+  rdate DATE,
+  seats INTEGER,
+  lugDesc CHAR(20),
+  src_lcode CHAR(20) NOT NULL,
+  dst_lcode CHAR(20) NOT NULL,
+  email CHAR(20) NOT NULL,
+  cno CHAR(20),
+
+  PRIMARY KEY (rno),
+  FOREIGN KEY (src_lcode) REFERENCES Locations,
+  FOREIGN KEY (dst_lcode) REFERENCES Locations,
+  FOREIGN KEY (email) REFERENCES Drivers,
+  FOREIGN KEY (cno) REFERNCES Cars_register
+)
+
+CREATE TABLE Locations (
+  lcode CHAR(20),
+  address CHAR(20),
+  prov CHAR(20),
+  city CHAR(20),
+
+  PRIMARY KEY (lcode)
+)
+
+CREATE TABLE reviews_reviewer_reviewee (
+  rid CHAR(20),
+  rdate DATE,
+  rtext CHAR(20),
+  rscore REAL,
+  reviewer_email CHAR(20) NOT NULL,
+  reviewee_email CHAR(20) NOT NULL,
+  rno (CHAR20),
+
+  PRIMARY KEY (rid),
+  FOREIGN KEY (reviewer_email) REFERENCES Members,
+  FOREIGN KEY (reviewee_email) REFERENCES Members,
+  FOREIGN KEY (rno) REFERNCES rides_src_dst_offer
+)
+
+CREATE TABLE Cars_register (
+  cno CHAR(20),
+  make CHAR(10),
+  model CHAR(10),
+  year INTEGER,
+  seats INTEGER,
+  gdate DATE,
+  email CHAR(20) NOT NULL,
+
+  PRIMARY KEY (cno),
+  FOREIGN KEY (email) REFERENCES Drivers
+)
+
+CREATE TABLE Members(
+  email CHAR(20),
+  name CHAR(20),
+  phone CHAR(20),
+
+  PRIMARY KEY (email)
+)
+
+CREATE TABLE Drivers (
+  email CHAR(20) NOT NULL,
+  licNo CHAR(10),
+
+  PRIMARY KEY (email),
+  FOREIGN KEY (email) REFERENCES Members
+)
+
+CREATE TABLE enroute (
+  lcode CHAR(20),
+  rno CHAR(20),
+
+  PRIMARY KEY (lcode, rno),
+  FOREIGN KEY (lcode) REFERENCES Locations,
+  FOREIGN KEY (rno) REFERENCES rides_src_dst_offer
+)
+
+CREATE TABLE requests (
+  dropoff_lcode CHAR(20),
+  pickup_lcode CHAR(20),
+  email CHAR(20),
+  amount REAL,
+  qdate DATE,
+
+  PRIMARY KEY (dropoff_lcode, pickup_lcode, email),
+  FOREIGN KEY (dropoff_lcode) REFERENCES Locations,
+  FOREIGN KEY (pickup_lcode) REFERENCES Locations,
+  FOREIGN KEY (email) REFERENCES Members
+)
